@@ -33,7 +33,6 @@ python main.py
 You should see something like this:
 ```
 4000/4000 [==============================] - 314s 76ms/step - loss: 67.8137 - MAPE: 67.8137 - val_loss: 150.7025 - val_MAPE: 150.7025
-WARNING:tensorflow:Your input ran out of data; interrupting training. Make sure that your dataset or generator can generate at least `steps_per_epoch * epochs` batches (in this case, 5 batches). You may need to use the repeat() function when building your dataset.
 
 Epoch 00001: saving model to ../trained_modelsGNNetworkingChallenge\01-150.70-150.70
 ```
