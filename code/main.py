@@ -86,4 +86,7 @@ model.fit(ds_train,
 model.evaluate(ds_test)
 
 # This method return the predictions in a python array
-predictions = model.predict()
+predictions = model.predict(ds_test)
+
+# Do stuff here
+print(predictions)
