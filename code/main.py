@@ -46,7 +46,7 @@ model.compile(loss=loss_object,
               metrics="MAPE")
 
 # Define the checkpoint directory where the model will be saved
-ckpt_dir = os.path.join(config['DIRECTORIES']['logs'], 'GNNetworkingChallenge')
+ckpt_dir = config['DIRECTORIES']['logs']
 latest = tf.train.latest_checkpoint(ckpt_dir)
 
 # Reload the pretrained model in case it exists
@@ -58,6 +58,7 @@ else:
 
 filepath = os.path.join(ckpt_dir, "{epoch:02d}-{val_loss:.2f}-{val_MAPE:.2f}")
 
+# If save_best_only, the program will only save the best model using 'monitor' as metric
 cp_callback = tf.keras.callbacks.ModelCheckpoint(
     filepath=filepath,
     verbose=1,
@@ -67,6 +68,7 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(
     save_weights_only=True,
     save_freq='epoch')
 
+# This method trains the model saving the model each epoch.
 model.fit(ds_train,
           epochs=int(config['RUN_CONFIG']['epochs']),
           steps_per_epoch=int(config['RUN_CONFIG']['steps_per_epoch']),
@@ -74,3 +76,9 @@ model.fit(ds_train,
           validation_steps=int(config['RUN_CONFIG']['validation_steps']),
           callbacks=[cp_callback],
           use_multiprocessing=True)
+
+# This method evaluates the trained model and outputs the desired metrics for all the test dataset.
+model.evaluate(ds_test)
+
+# This method return the predictions in a python array
+predictions = model.predict()

@@ -42,16 +42,16 @@ Epoch 00001: saving model to ../trained_modelsGNNetworkingChallenge\01-150.70-15
 We provide two methods, one for training and evaluation and one for prediction. These methods can be found in the [main.py](/code/main.py) file.
 
 #### Training and evaluation
-The method for training and evaluation can be found in the [main.py](/code/main.py) file and it is called [train_and_evaluate](/code/main.py#L29). This method trains during a max number of steps and evaluates every number of seconds. 
-It also automatically saves the trained model in a directory every time step.
+The [main.py](/code/main.py) file automatically trains and evaluates your model. This script trains during a max number of epochs, evaluating and saving the model for each one.
 
-<ins>**IMPORTANT NOTE:**</ins> The execution can be stopped and resumed at any time. However, **if you want to start a new training phase you need to create a new directory (or empty the previous one)**. If you are only doing tests, you can simply pass *model_dir*=None. This will create a temporary directory that will be removed at the end of the execution.
+<ins>**IMPORTANT NOTE:**</ins> The execution can be stopped and resumed at any time. However, **if you want to start a new training phase you need to create a new directory (or empty the previous one)**. If you are only doing tests and do not want to save the model, you can simply remove the callbacks argument of the fit function.
 
-Note that all the parameters needed for the execution (max number of steps, time between model saving...) can be changed in the [[RUN_CONFIG]](code/config.ini#L29) section within the [config.ini](code/config.ini) file.
+Note that all the parameters needed for the execution (max number of epochs, steps per epoch...) can be changed in the [[RUN_CONFIG]](code/config.ini#L29) section within the [config.ini](code/config.ini) file.
 
 #### Prediction
-In order to make predictions with the trained model, the method [predict](/code/main.py#L66) is provided. This method takes as input the path to the trained model and returns an array with the predictions.
-Another method called [predict_and_save](/code/main.py#L90) can also be used in order to make the predictions. In this case, the real and the predicted delays are saved in a CSV file in order to make the visualization of the errors in an easier way. This function returns the Mean Relative Error used for the evaluation. 
+The last thing the [main.py](/code/main.py) file does is to return and store the predictions in a python array that then can be used to store them, post-process them... 
+
+Note that, if you only want to make predictions once the model is trained, you can simply remove the fit and evaluate methods found in the [main.py](/code/main.py) file.
 
 ## 'How to' guide to modify the code
 ### Transforming the input data
