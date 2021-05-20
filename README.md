@@ -107,7 +107,7 @@ self.path_embedding = tf.keras.Sequential([
 One of the main differences that training and test datasets is the link capacities values. This means that, the distribution of the delay is different from the training and the test data. This figure shows the aforementioned different, in it we can find the delay distribution in log scale.
 
 <p align="center"> 
-  <img src="/assets/routenet_scheme.PNG" width="600" alt>
+  <img src="/assets/log_delay.png" width="600" alt>
 </p>
 
 One way of dealing with this problem is to, instead of working with the delay, work with the queue occupancy that is a value that ranges form 0 to 1 and represents the percentage of the queue that is filled with packets. In order to do so, first we need to change the target variable that the model is going to consider. To do so, you need to modify the [read_dataset.py](/code/read_dataset.py#L138) and change this line:
@@ -119,7 +119,9 @@ To this one:
  }, list(nx.get_node_attributes(D_G, 'occupancy').values())
 ```
 
-**IMPORTANT NOTE: ** If you decide to work with the queue occupancy, since now you are working with a link attribute, you will need to change the [readout function](/code/routenet_model.py#L71) to accpet as input the link state, not the path state.
+**IMPORTANT NOTE:** If you decide to work with the queue occupancy, since now you are working with a link attribute, you will need to change the [readout function](/code/routenet_model.py#L71) to accpet as input the link state, not the path state.
+
+Finally, this challenge is about predicting the delay of a network, not the queue occupancy. However, the results of your model can be post-processed to easily compute the delay. You can do so computing all the delays that each queue a path traverses add. A delay added for a specific queue can be computed by dividing the queue occupancy by its output capacity. 
 
 ### Available features
 In the previous example we could directly include the packets transmitted (i.e., f_['packets']) into the paths’ hidden states. This is because this implementation provides some dataset features that are already processed from the dataset and converted into tensors. Particularly, these tensors are then used to fill a [TensorFlow Dataset structure]( https://www.tensorflow.org/versions/r2.1/api_docs/python/tf/data/Dataset). This can be found in the [read_data.py](/code/read_dataset.py#L175) file, where the following features are included:
