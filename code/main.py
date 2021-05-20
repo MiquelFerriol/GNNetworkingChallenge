@@ -8,12 +8,17 @@ import configparser
 
 import os
 
-
 # In case you want to disable GPU execution uncomment this line
 # os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
-
 def transformation(x, y):
+    """Apply a transformation over all the samples included in the dataset.
+           Args:
+               x (dict): predictor variables.
+               y (array): target variable.
+           Returns:
+               x,y: The modified predictor/target variables.
+    """
     return x, y
 
 

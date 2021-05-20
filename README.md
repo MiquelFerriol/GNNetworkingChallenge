@@ -55,7 +55,7 @@ Note that, if you only want to make predictions once the model is trained, you c
 ## 'How to' guide to modify the code
 ### Transforming the input data
 Now, the model reads the data as it is in the datasets. However, it is often highly recommended to apply some transformations (e.g. normalization, standardization, etc.) to the data in order to facilitate the model to converge during training.
-In the [dataset.py](code/read_dataset.py) module you can find a function called [transformation(x, y)](code/read_dataset.py#L125), where the X variable represents the predictors used by the model and the Y variable the target values.
+In the [main.py](code/main.py) module you can find a function called [transformation(x, y)](code/main.py#L125), where the X variable represents the predictors used by the model and the Y variable the target values.
 For example, if you want to apply a Min-Max scaling over the 'bandwith' variable, you can use the following code:
 ```
 def transformation(x, y):
