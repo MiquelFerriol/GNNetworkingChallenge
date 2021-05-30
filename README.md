@@ -50,7 +50,7 @@ Epoch 1/5
 ```
 
 ### Training, evaluation and prediction
-IGNNITION provides two methods, one for training and evaluation and one for prediction. These methods can be found in the [main.py](/code/main.py) file. For more information, please refer to the official [IGNNITION documentation](https://ignnition.net/doc/)
+IGNNITION provides two methods, one for training and evaluation and one for prediction. These methods can be found in the [main.py](/code/main.py) file. For more information, please refer to the official [IGNNITION documentation.](https://ignnition.net/doc/)
 
 #### Preparing the datasets
 In order to properly feed the dataset to IGNNITION, the dataset must be in json format (you can get more information [here](https://ignnition.net/doc/generate_your_dataset/)). For this, we provide a [migrate.py](code/migrate.py) file that reads the provided datasets and transforms them to the proper format.
@@ -78,7 +78,7 @@ Note that, if you only want to make predictions once the model is trained, you c
 ## 'How to' guide to modify the code
 ### Transforming the input data
 Now, the model reads the data as it is in the datasets. However, it is often highly recommended to apply some transformations (e.g. normalization, standardization, etc.) to the data in order to facilitate the model to converge during training.
-In the [main.py](code/main.py) module you can find a function called [normalization(feature, feature_name)](code/main.py#L26), where the feature variable represents the predictors used by the model and the feature_name variable the name of the variable.
+In the [main.py](code/main.py) module you can find a function called [normalization(feature, feature_name)](code/main.py#L25), where the feature variable represents the predictors used by the model and the feature_name variable the name of the variable.
 For example, if you want to apply a logarithmic transformation over the 'delay' variable, you can use the following code:
 ```
 def normalization(feature, feature_name):
@@ -87,7 +87,7 @@ def normalization(feature, feature_name):
     return feature
 ```
 
-In this particular case, we transformed the target variable which in this case is the delay. This implies that all the metrics will be printed using the normalized data. If you want to obtain the specified metrics denormlized, you simply need to define the denormalization inside the [denormalization(feature, feature_name)](code/main.py#L32). Here an example:
+In this particular case, we transformed the target variable which in this case is the delay. This implies that all the metrics will be printed using the normalized data. If you want to obtain the specified metrics denormlized, you simply need to define the denormalization inside the [denormalization(feature, feature_name)](code/main.py#L30). Here an example:
 ```
 def denormalization(feature, feature_name):
     if feature_name == 'delay':
@@ -153,15 +153,13 @@ readout:
   output_label: [$delay]
 ```
 
-**IMPORTANT NOTE:** If you decide to work with the queue occupancy, since this is a port-level property, it would be needed to change the input of the [readout function]( https://github.com/MiquelFerriol/GNNetworkingChallenge/blob/2021_Routenet_TF/code/routenet_model.py#L71). In the case of RouteNet queue occupancy could be an attribute related to links states, instead of the path states.
-
 Finally, as the outputs required in the challenge are the per-path mean delays, it is possible to make a final post-processing to infer them from the avg. queue occupancy estimated by RouteNet. Particularly, path delays can be estimated as the linear combination of delays on each queue that form the path, considering the avg. queue occupation, the queue size, and the capacity of the outgoing link. The delay of a queue can be computed by dividing the avg. number of packets in the queue (predicted-queue-occupancy * queue size), by the capacity of the outgoing link of the queue.
 
 ### Available features
-In the previous example we could directly include the packets transmitted (i.e., f_['packets']) into the paths’ hidden states. This is because this implementation provides some dataset features that are already processed from the dataset and converted into tensors. Particularly, these tensors are then used to fill a [TensorFlow Dataset structure]( https://www.tensorflow.org/versions/r2.1/api_docs/python/tf/data/Dataset). This can be found in the [read_data.py](/code/read_dataset.py#L175) file, where the following features are included:
-* 'bandwidth': This tensor represents the bitrate (bits/time unit) of all the src-dst paths (This is obtained from the traffic_matrix[src,dst][′Flows′][flow_id][‘AvgBw’] values of all src-dst pairs using the [DataNet API]((https://github.com/knowledgedefinednetworking/datanetAPI/tree/challenge2020)))
-* 'packets': This tensor represents the rate of packets generated (packets/time unit) of all the src-dst paths (This is obtained from the traffic_matrix[src,dst][′Flows′][flow_id][‘PktsGen’] values of all src-dst pairs using the [DataNet API]((https://github.com/knowledgedefinednetworking/datanetAPI/tree/challenge2020)))
-* 'capacity': This tensor represents the link capacity (bits/time unit) of all the links found on the network (This is obtained from the topology_object[node][adj][0]['bandwidth'] values of all node-adj pairs using the [DataNet API]((https://github.com/knowledgedefinednetworking/datanetAPI/tree/challenge2020)))
+In the previous example we could directly include the packets transmitted ($packets) into the paths’ hidden states. This is because this implementation provides some dataset features that are already processed from the dataset. This can be found in the [network_to_hypergraph](/code/migrate.py#L38) function in the [migrate.py](/code/migrate.py) file, where the following features are included:
+* 'bandwidth': This feature represents the bitrate (bits/time unit) of all the src-dst paths (This is obtained from the traffic_matrix[src,dst][′Flows′][flow_id][‘AvgBw’] values of all src-dst pairs using the [DataNet API]((https://github.com/knowledgedefinednetworking/datanetAPI/tree/challenge2020)))
+* 'packets': This feature represents the rate of packets generated (packets/time unit) of all the src-dst paths (This is obtained from the traffic_matrix[src,dst][′Flows′][flow_id][‘PktsGen’] values of all src-dst pairs using the [DataNet API]((https://github.com/knowledgedefinednetworking/datanetAPI/tree/challenge2020)))
+* 'capacity': This feature represents the link capacity (bits/time unit) of all the links found on the network (This is obtained from the topology_object[node][adj][0]['bandwidth'] values of all node-adj pairs using the [DataNet API]((https://github.com/knowledgedefinednetworking/datanetAPI/tree/challenge2020)))
 
 Note that there are additional features in our datasets that are not included in this TensorFlow Data structure. However, they can be included processing the data with the dataset API and converting it into tensors. For this, you need to modify the [network_to_hypergraph](/code/migrate.py#L38) function in the [migrate.py](/code/migrate.py) file. Please, refer to the [API documentation]( https://github.com/BNN-UPC/datanetAPI/tree/challenge2021) of the datasets to see more details about all the data included in our datasets.
 
